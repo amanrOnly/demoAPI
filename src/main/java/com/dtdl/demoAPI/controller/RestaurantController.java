@@ -31,7 +31,13 @@ public class RestaurantController {
     @PutMapping("/update")
     public ResponseEntity<Object> updateRestaurant(@Valid @RequestBody RestaurantDto restaurant, @RequestParam("restaurantID") int id){
 
-        service.updateRestaurant(restaurant, id);
+        this.service.updateRestaurant(restaurant, id);
         return new ResponseEntity<Object>("Restaurant Updated!", HttpStatus.OK);
+    }
+
+    @PutMapping("/{restaurantID}/food/{foodID}/order/{orderID}")
+    public ResponseEntity<RestaurantDto> assignOrderToFood(@Valid @PathVariable int restaurantID, @PathVariable int foodID, @PathVariable int orderID){
+        RestaurantDto restaurantDto =  this.service.assignOrderToFood(restaurantID, foodID, orderID);
+        return new ResponseEntity<>(restaurantDto, HttpStatus.ACCEPTED);
     }
 }

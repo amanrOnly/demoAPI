@@ -28,4 +28,7 @@ public class FoodReview {
     @JoinColumn(name = "food_ID", referencedColumnName = "foodID")
     private Food food;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "food_review_id", insertable = false, updatable = false)
+    private User userReview;
 }

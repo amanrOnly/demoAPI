@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Entity
@@ -34,9 +34,13 @@ public class Order {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "orderID", insertable = false, updatable = false)
-    User user;
+    private User user;
 
     @ManyToMany
-    private List<Food> foods = new ArrayList<>();
-
+    @JoinTable(
+            name = "orders_foods",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_id")
+    )
+    private Set<Food> foodSet = new HashSet<>();
 }

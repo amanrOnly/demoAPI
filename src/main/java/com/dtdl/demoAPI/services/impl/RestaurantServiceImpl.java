@@ -2,19 +2,31 @@ package com.dtdl.demoAPI.services.impl;
 
 import com.dtdl.demoAPI.exception.ResourceNotFoundException;
 import com.dtdl.demoAPI.exception.SaveException;
+import com.dtdl.demoAPI.model.Food;
+import com.dtdl.demoAPI.model.Order;
 import com.dtdl.demoAPI.model.Restaurant;
 import com.dtdl.demoAPI.payload.RestaurantDto;
+import com.dtdl.demoAPI.repository.FoodRepository;
+import com.dtdl.demoAPI.repository.OrderRepository;
 import com.dtdl.demoAPI.repository.RestaurantRepository;
 import com.dtdl.demoAPI.services.RestaurantService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
 
     @Autowired
     private RestaurantRepository resRepo;
+
+    @Autowired
+    private OrderRepository orderRepo;
+
+    @Autowired
+    private FoodRepository foodRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -43,5 +55,19 @@ public class RestaurantServiceImpl implements RestaurantService {
         } catch (Exception e) {
             throw new SaveException("Restaurant");
         }
+    }
+
+    public RestaurantDto assignOrderToFood(int restaurantID, int foodID, int orderID) {
+
+        Set<Order> orderSet = null;
+        Order order = this.orderRepo.findById(orderID).orElseThrow(()->new ResourceNotFoundException());
+        Food food = this.foodRepo.findById(foodID).orElseThrow(()->new ResourceNotFoundException());
+        orderSet = food.getOrderSet();
+        orderSet.add(order);
+        food.setOrderSet(orderSet);
+        this.foodRepo.save(food);
+        Restaurant restaurant = resRepo.findById(restaurantID).orElseThrow(()->new ResourceNotFoundException());
+        RestaurantDto restaurantDto = this.modelMapper.map(restaurant, RestaurantDto.class);
+        return restaurantDto;
     }
 }

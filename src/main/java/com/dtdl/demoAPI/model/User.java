@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Entity
@@ -30,5 +31,9 @@ public class User {
     private String location;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Order> orderSet;
+    private Set<Order> orderSet;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userReview")
+    private Set<FoodReview> foodReviewSet;
+
 }

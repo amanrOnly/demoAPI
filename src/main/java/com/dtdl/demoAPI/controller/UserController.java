@@ -37,19 +37,25 @@ public class UserController {
         return new ResponseEntity<>("User Registered!", HttpStatus.CREATED);
     }
 
-    @PostMapping("/order")
-    public ResponseEntity<Object> order(@Valid @RequestBody OrderDto order, @RequestParam int userID){
+    @PostMapping("/{userID}/placeOrder")
+    public ResponseEntity<Object> order(@Valid @RequestBody OrderDto order, @PathVariable int userID){
         this.userService.saveOrder(order, userID);
         return new ResponseEntity<>("Food Ordered!", HttpStatus.CREATED);
     }
 
-    @PostMapping("/addReview")
-    public ResponseEntity<Object> addReview(@Valid FoodReviewDto review, @RequestParam("RestaurantID") int restaurantID, @RequestParam("FoodID") int foodID){
-        this.userService.addRating(review, restaurantID, foodID);
+    @PostMapping("/{userID}/addReview")
+    public ResponseEntity<Object> addReview(@Valid FoodReviewDto review, @PathVariable int userID, @RequestParam("RestaurantID") int restaurantID, @RequestParam("FoodID") int foodID){
+        this.userService.addRating(review, userID, restaurantID, foodID);
         return new ResponseEntity<>("Feedback Submitted!", HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{id}/search")
+    @PutMapping("/{userID}/order/{orderID}/food/{foodID}")
+    public ResponseEntity<UserDto> assignFoodToOrder(@Valid @PathVariable int userID, @PathVariable int orderID, @PathVariable int foodID){
+        UserDto userDto = this.userService.assignFoodToOrder(userID, orderID, foodID);
+        return new ResponseEntity<>( userDto, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/{id}/search")
     public ResponseEntity<List<Restaurant>> searchRestaurants(
             @PathVariable int id,
             @RequestParam("minimumRating") float minRating,
