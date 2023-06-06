@@ -5,14 +5,16 @@
 ### User
 
 - /user/register
-- /user/order
-- /user/addReview
+- /user//{userID}/placeOrder
+- /user/{userID}/addReview
 - /user/{id}/search
+- /user/{userID}/order/{orderID}/food/{foodID}
 
 ### Restaurant
 
 - /restaurant/register
 - /restaurant/update
+- /restaurant/{restaurantID}/food/{foodID}/order/{orderID}
 
 ### Food
 
