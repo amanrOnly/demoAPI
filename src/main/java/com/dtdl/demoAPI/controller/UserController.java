@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/{userID}/addReview")
-    public ResponseEntity<Object> addReview(@Valid FoodReviewDto review, @PathVariable int userID, @RequestParam("RestaurantID") int restaurantID, @RequestParam("FoodID") int foodID){
+    public ResponseEntity<Object> addReview(@Valid @RequestBody FoodReviewDto review, @PathVariable int userID, @RequestParam("restaurantID") int restaurantID, @RequestParam("foodID") int foodID){
         this.userService.addRating(review, userID, restaurantID, foodID);
         return new ResponseEntity<>("Feedback Submitted!", HttpStatus.CREATED);
     }
@@ -58,9 +58,9 @@ public class UserController {
     @GetMapping("/{id}/search")
     public ResponseEntity<List<Restaurant>> searchRestaurants(
             @PathVariable int id,
-            @RequestParam("minimumRating") float minRating,
+            @RequestParam(value = "minimumRating", defaultValue = "0") float minRating,
             @RequestParam("foodName") String foodName,
-            @RequestParam("sortDirection") String sortDir){
+            @RequestParam(value = "sortDirection", required = false) String sortDir){
         List<Restaurant> filteredList =  userService.search(id, minRating, foodName, sortDir);
         return new ResponseEntity<>(filteredList, HttpStatus.OK);
     }

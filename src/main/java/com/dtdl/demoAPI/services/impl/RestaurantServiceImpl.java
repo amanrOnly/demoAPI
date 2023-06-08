@@ -45,7 +45,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public void updateRestaurant(RestaurantDto restaurantDto, int id){
 
-        Restaurant res = resRepo.findById(id).orElseThrow(()->new ResourceNotFoundException());
+        Restaurant res = resRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("updateRestaurant",48));
         try {
             res.setRestaurantName(restaurantDto.getRestaurantName());
             res.setOwnerName(restaurantDto.getOwnerName());
@@ -60,13 +60,13 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDto assignOrderToFood(int restaurantID, int foodID, int orderID) {
 
         Set<Order> orderSet = null;
-        Order order = this.orderRepo.findById(orderID).orElseThrow(()->new ResourceNotFoundException());
-        Food food = this.foodRepo.findById(foodID).orElseThrow(()->new ResourceNotFoundException());
+        Order order = this.orderRepo.findById(orderID).orElseThrow(()->new ResourceNotFoundException("assignOrderToFood",63));
+        Food food = this.foodRepo.findById(foodID).orElseThrow(()->new ResourceNotFoundException("assignOrderToFood",64));
         orderSet = food.getOrderSet();
         orderSet.add(order);
         food.setOrderSet(orderSet);
         this.foodRepo.save(food);
-        Restaurant restaurant = resRepo.findById(restaurantID).orElseThrow(()->new ResourceNotFoundException());
+        Restaurant restaurant = resRepo.findById(restaurantID).orElseThrow(()->new ResourceNotFoundException("assignOrderToFood",69));
         RestaurantDto restaurantDto = this.modelMapper.map(restaurant, RestaurantDto.class);
         return restaurantDto;
     }

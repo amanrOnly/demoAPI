@@ -19,7 +19,7 @@ public interface UserService {
 
     List<Restaurant> search(int userID, float minRating, String foodName, String sortDir);
 
-    void addRating(FoodReviewDto review, int userID, int foodID, int restaurantID);
+    void addRating(FoodReviewDto review, int userID, int restaurantID, int foodID);
 
     UserDto assignFoodToOrder(int userID, int orderID, int foodID);
 }

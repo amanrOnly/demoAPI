@@ -13,7 +13,7 @@ public class RestaurantDto implements Comparable<RestaurantDto>{
     private String restaurantName;
     private String ownerName;
     private String location;
-    private int contactNumber;
+    private double contactNumber;
     private float rating;
 
     @Override

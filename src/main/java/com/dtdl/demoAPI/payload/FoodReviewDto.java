@@ -1,15 +1,25 @@
 package com.dtdl.demoAPI.payload;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
+import java.io.Serializable;
+
+@Validated
 @NoArgsConstructor
-@Getter
-@Setter
-public class FoodReviewDto {
+@Data
+@Builder
+@AllArgsConstructor
+public class FoodReviewDto implements Serializable {
 
-    private int reviewID;
-    private String foodReview;
-    private float foodRating;
+    private static final long serialVersionUID = 1L;
+    @JsonProperty("id")
+    private int id = 0;
+
+    @JsonProperty("foodReview")
+    private String foodReview = null;
+
+    @JsonProperty("foodRating")
+    private float foodRating = 0;
 }

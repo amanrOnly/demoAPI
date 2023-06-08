@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +23,8 @@ public class Order {
     private int orderID;
 
     @Column
-    private String dateTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateTime;
 
     @Column
     private String paymentMethod;
@@ -33,7 +36,7 @@ public class Order {
     private int price;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "orderID", insertable = false, updatable = false)
+    @JoinColumn(name = "user_order")
     private User user;
 
     @ManyToMany

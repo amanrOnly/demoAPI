@@ -35,11 +35,11 @@ public class Food {
     @Column
     private Boolean availabilityStatus;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "food")
-    private FoodReview review;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "food")
+    private Set<FoodReview> reviewSet;
 
     @ManyToOne
-    @JoinColumn(name = "RestaurantID")
+    @JoinColumn(name = "restaurant_food")
     private Restaurant res;
 
     @ManyToMany(mappedBy = "foodSet", cascade = CascadeType.ALL)

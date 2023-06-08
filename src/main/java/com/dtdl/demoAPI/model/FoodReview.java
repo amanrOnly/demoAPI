@@ -24,11 +24,11 @@ public class FoodReview {
     @Column
     private float foodRating;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "food_ID", referencedColumnName = "foodID")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "food_reviews", referencedColumnName = "foodID")
     private Food food;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "food_review_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_review")
     private User userReview;
 }

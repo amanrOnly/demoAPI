@@ -37,33 +37,33 @@ public class FoodServiceImpl implements FoodService {
         try {
             foodList = this.foodRepo.getAvailableFoods();
         } catch (Exception e) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("getFoods", 38);
         }
         List<FoodDto> foodDtoList = foodList.stream().map((food)->this.modelMapper.map(food, FoodDto.class)).collect(Collectors.toList());
         return foodDtoList;
     }
 
     @Override
-    public void addFood(FoodDto foodDto, int restaurantID, int reviewID){
+    public void addFood(FoodDto foodDto, int restaurantID){
 
         Food food = this.modelMapper.map(foodDto, Food.class);
-        Restaurant restaurant = resRepo.findById(restaurantID).orElseThrow(()->new ResourceNotFoundException("Restaurant", "restaurantID", restaurantID));
+        Restaurant restaurant = resRepo.findById(restaurantID).orElseThrow(()->new ResourceNotFoundException("addFoods", 50));
         food.setRes(restaurant);
-        FoodReview review = reviewRepo.findById(reviewID).get();
-        food.setReview(review);
+//        FoodReview review = reviewRepo.findById(reviewID).get();
+//        food.setReview(review);
         // setOrder remaining
         foodRepo.save(food);
     }
 
     @Override
     public void deleteById(int id){
-        Food food = this.foodRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException());
+        Food food = this.foodRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("deleteById", 60));
         foodRepo.delete(food);
     }
 
     @Override
     public void deactivateFoodById(int id){
-        Food food = foodRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("Food Table", "foodID", id));
+        Food food = foodRepo.findById(id).orElseThrow(()->new ResourceNotFoundException("deactivateFoodById", 66));
         food.setAvailabilityStatus(false);
         foodRepo.save(food);
     }

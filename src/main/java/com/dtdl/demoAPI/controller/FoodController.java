@@ -29,9 +29,9 @@ public class FoodController {
 
     // POST REQUESTS
     @PostMapping("/add")
-    public ResponseEntity<Object> addFood(@Valid @RequestBody FoodDto foodDto, @RequestParam("restaurantID") int restaurantID, @RequestParam("foodReviewID") int reviewID){
+    public ResponseEntity<Object> addFood(@Valid @RequestBody FoodDto foodDto, @RequestParam("restaurantID") int restaurantID){
 
-        this.foodService.addFood(foodDto, restaurantID, reviewID);
+        this.foodService.addFood(foodDto, restaurantID);
         return new ResponseEntity<>("Food added!", HttpStatus.CREATED);
     }
 

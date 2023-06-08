@@ -2,6 +2,7 @@ package com.dtdl.demoAPI.services.impl;
 
 import com.dtdl.demoAPI.exception.ResourceNotFoundException;
 import com.dtdl.demoAPI.exception.SaveException;
+import com.dtdl.demoAPI.exception.ServerException;
 import com.dtdl.demoAPI.model.*;
 import com.dtdl.demoAPI.payload.FoodReviewDto;
 import com.dtdl.demoAPI.payload.OrderDto;
@@ -51,18 +52,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveOrder(OrderDto orderDto, int userID){
 
-        DateFormat order_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        String date_time = order_time.format(cal.getTime());
-        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException());
+//        DateFormat order_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Calendar cal = Calendar.getInstance();
+//        String date_time = order_time.format(cal.getTime());
+        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("saveOrder", 58));
         Order order = this.modelMapper.map(orderDto, Order.class);
-        try {
+//        try {
             order.setUser(user);
-            order.setDateTime(date_time);
             this.orderRepo.save(order);
-        } catch (Exception e) {
-            throw new SaveException("order");
-        }
+//        } catch (Exception e) {
+//            throw new SaveException("order");
+//        }
     }
 
     @Override
@@ -71,51 +71,63 @@ public class UserServiceImpl implements UserService {
         try {
             userList = this.userRepo.findAll();
         } catch (Exception e) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("getUsers", 71);
         }
         return userList.stream().map((user)-> this.modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public void addRating(FoodReviewDto reviewDto, int userID, int foodID, int restaurantID){
+    public void addRating(FoodReviewDto reviewDto, int userID, int restaurantID, int foodID){
 
-        Food food = this.foodRepo.findById(foodID).orElseThrow(()->new ResourceNotFoundException());
+        Food food = this.foodRepo.findById(foodID).orElseThrow(()->new ResourceNotFoundException("addRating", 81));
         FoodReview review = this.modelMapper.map(reviewDto, FoodReview.class);
-        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException());
+        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("addRating", 83));
+        Set<FoodReview> reviewSet = food.getReviewSet();
+        reviewSet.add(review);
         review.setUserReview(user);
         try {
-            review.setFood(food);
-            this.reviewRepo.save(review);
+//            review.setFoodReview(reviewDto.getFoodReview());
+//            review.setFoodRating(reviewDto.getFoodRating());
+//            review.setFood(food);
+            food.setReviewSet(reviewSet);
+            this.foodRepo.save(food);
         } catch (Exception e) {
             throw new SaveException("FoodReview");
         }
 
         //Calculating Average Rating of the Restaurant based on ratings of individual food rating
 
-        Restaurant restaurant = this.resRepo.findById(restaurantID).orElseThrow(() -> new ResourceNotFoundException("Restaurant", "restaurantID", restaurantID));
+        Restaurant restaurant = this.resRepo.findById(restaurantID).orElseThrow(() -> new ResourceNotFoundException("addRating", 94));
         List<Food> foodList = restaurant.getFoodList();
 
-        if(foodList.isEmpty()){
-            restaurant.setRating(0);
-        }else{
-            float sum = (float) foodList.stream().mapToDouble(item->item.getReview().getFoodRating()).sum();
-            float avgRating = sum/foodList.size();
-            restaurant.setRating(avgRating);
+        try {
+            if(foodList.isEmpty()) restaurant.setRating(0);
+            else{
+                float sumRatingFood = (float) reviewSet.stream().mapToDouble(singleReview->singleReview.getFoodRating()).sum();
+                float avgFoodRating = sumRatingFood/reviewSet.size();
+                food.setRating(avgFoodRating);
+                this.foodRepo.save(food);
+                float sumRatingRestaurant = (float) foodList.stream().mapToDouble(singleFood->singleFood.getRating()).sum();
+                float avgRestaurantRating = sumRatingRestaurant/foodList.size();
+                restaurant.setRating(avgRestaurantRating);
+                this.resRepo.save(restaurant);
+            }
+        } catch (Exception e) {
+            throw new ServerException("Error while calculating average ratings for Food and Restaurant", System.getProperty("user.dir"));
         }
-        this.resRepo.save(restaurant);
     }
 
     @Override
     public UserDto assignFoodToOrder(int userID, int orderID, int foodID) {
 
         Set<Food> foodSet = null;
-        Order order = this.orderRepo.findById(orderID).orElseThrow(()->new ResourceNotFoundException());
-        Food food = this.foodRepo.findById(foodID).orElseThrow(()-> new ResourceNotFoundException());
+        Order order = this.orderRepo.findById(orderID).orElseThrow(()->new ResourceNotFoundException("assignFoodToOrder", 111));
+        Food food = this.foodRepo.findById(foodID).orElseThrow(()-> new ResourceNotFoundException("assignFoodToOrder", 112));
         foodSet = order.getFoodSet();
         foodSet.add(food);
         order.setFoodSet(foodSet);
         this.orderRepo.save(order);
-        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException());
+        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("assignFoodToOrder", 117));
         UserDto userDto = this.modelMapper.map(user, UserDto.class);
         return userDto;
     }
@@ -123,13 +135,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Restaurant> search(int userID, float minRating, String foodName, String sortDir){
 
-        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("User", "userID", userID));
+        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("search", 125));
         String location = user.getLocation();
         List<Restaurant> resList = this.resRepo.searchByRestaurantLocation("%"+foodName+"%","%"+location+"%", minRating);
 
-        if(sortDir.equalsIgnoreCase("ASC")){
-            Collections.sort(resList);
-        }else{Collections.sort(resList, Collections.reverseOrder());}
+//        if(sortDir.equalsIgnoreCase("ASC")){
+//            Collections.sort(resList);
+//        }else{Collections.sort(resList, Collections.reverseOrder());}
 
 //        ---------Sorting using Pagination----------
 //        List<Food> filteredFoods = foodRepo.searchByFoodName("%"+foodName+"%");

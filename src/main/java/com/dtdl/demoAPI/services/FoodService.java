@@ -9,7 +9,7 @@ public interface FoodService {
 
     List<FoodDto> getFoods();
 
-    void addFood(FoodDto food, int restaurantID, int reviewID);
+    void addFood(FoodDto food, int restaurantID);
 
     void deleteById(int id);
 
