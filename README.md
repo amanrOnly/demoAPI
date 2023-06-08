@@ -27,9 +27,8 @@
 
 http://localhost:9090/swagger-ui.html
 
-[//]: # (NOTES
+#NOTES
 
-Could be optimized
-http://localhost:9090/user/12/order/17/food/5
-you can directly get order id be user id, no need demand it explicitely.
-)
+To be optimized
+- http://localhost:9090/user/12/order/17/food/5
+we can directly get order id using user id, no need request it.
