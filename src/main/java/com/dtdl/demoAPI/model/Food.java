@@ -1,5 +1,7 @@
 package com.dtdl.demoAPI.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,13 +37,15 @@ public class Food {
     @Column
     private Boolean availabilityStatus;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "food")
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "food", fetch = FetchType.LAZY)
     private Set<FoodReview> reviewSet;
 
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_food")
     private Restaurant res;
 
-    @ManyToMany(mappedBy = "foodSet", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "foodSet", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private Set<Order> orderSet = new HashSet<>();
 }

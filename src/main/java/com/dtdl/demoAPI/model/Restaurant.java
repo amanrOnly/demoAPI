@@ -1,5 +1,6 @@
 package com.dtdl.demoAPI.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,8 +36,8 @@ public class Restaurant implements Comparable<Restaurant>{
     @Column(columnDefinition = "float default 0")
     private float rating;
 
-
-    @OneToMany(mappedBy = "res", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "res", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Food> foodList = new ArrayList<>();
 
 

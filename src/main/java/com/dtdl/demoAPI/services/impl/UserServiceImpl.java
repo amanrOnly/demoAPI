@@ -135,10 +135,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Restaurant> search(int userID, float minRating, String foodName, String sortDir){
 
-        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("search", 125));
+        User user = this.userRepo.findById(userID).orElseThrow(()->new ResourceNotFoundException("search", 138));
         String location = user.getLocation();
+        System.out.println("/-----------LOCATION----------"+location);
         List<Restaurant> resList = this.resRepo.searchByRestaurantLocation("%"+foodName+"%","%"+location+"%", minRating);
-
+        resList.forEach(System.out::println);
 //        if(sortDir.equalsIgnoreCase("ASC")){
 //            Collections.sort(resList);
 //        }else{Collections.sort(resList, Collections.reverseOrder());}

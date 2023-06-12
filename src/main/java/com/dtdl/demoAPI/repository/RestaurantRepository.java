@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
-    @Query(value = "SELECT t FROM Restaurant t JOIN t.foodList f WHERE f.foodName LIKE %:reqFood% AND t.location LIKE :key AND t.rating > :minRating")
+    @Query(value = "SELECT t FROM Restaurant t JOIN t.foodList f WHERE f.foodName LIKE :reqFood AND t.location LIKE :key AND t.rating >= :minRating")
     List<Restaurant> searchByRestaurantLocation(@Param("reqFood") String reqFood, @Param("key") String restaurantLocation, @Param("minRating") float minRating);
 
 }
